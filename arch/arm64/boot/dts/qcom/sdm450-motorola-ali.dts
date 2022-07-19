@@ -92,6 +92,20 @@
 	vdda-phy-dpdm-supply = <&pm8953_l13>;
 };
 
+&i2c_1 {
+	status = "okay";
+
+	fusb302: typec-portc@22 {
+		compatible = "fcs,fusb302";
+		reg = <0x22>;
+		interrupt-parent = <&tlmm>;
+		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
+		// FIXME: supply-vbus property
+
+		// FIXME: connector node
+	};
+};
+
 &pm8953_resin {
 	status = "okay";
 	linux,code = <KEY_VOLUMEDOWN>;
