@@ -18,42 +18,11 @@
 		mmc1 = &sdhc_2;
 	};
 
-	chosen {
-		#address-cells = <2>;
-		#size-cells = <2>;
-		ranges;
-
-		framebuffer0: framebuffer@90001000 {
-			compatible = "simple-framebuffer";
-			reg = <0 0x90001000 0 (2160 * 1080 * 3)>;
-
-			width = <1080>;
-			height = <2160>;
-			stride = <(1080 * 3)>;
-			format = "r8g8b8";
-
-			power-domains = <&gcc MDSS_GDSC>;
-
-			clocks = <&gcc GCC_MDSS_AHB_CLK>,
-				 <&gcc GCC_MDSS_AXI_CLK>,
-				 <&gcc GCC_MDSS_VSYNC_CLK>,
-				 <&gcc GCC_MDSS_MDP_CLK>,
-				 <&gcc GCC_MDSS_BYTE0_CLK>,
-				 <&gcc GCC_MDSS_PCLK0_CLK>,
-				 <&gcc GCC_MDSS_ESC0_CLK>;
-		};
-	};
-
 	reserved-memory {
 		/delete-node/memory@85b00000;
 
 		memory@84300000 {
 			reg = <0x0 0x84300000 0x0 0x2000000>;
-			no-map;
-		};
-
-		memory@90001000 {
-			reg = <0x0 0x90001000 0x0 (1080 * 2160 * 3)>;
 			no-map;
 		};
 
@@ -80,6 +49,39 @@
 			label = "Volume Up";
 			gpios = <&tlmm 85 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_VOLUMEUP>;
+		};
+	};
+};
+
+&dsi_phy0 {
+	vcca-supply = <&pm8953_l3>;
+};
+
+&dsi0_out {
+	data-lanes = <0 1 2 3>;
+	remote-endpoint = <&panel_in>;
+};
+
+&dsi0 {
+	status = "okay";
+
+	vdda-supply = <&pm8953_s3>;
+	vddio-supply = <&pm8953_l6>;
+
+	panel@0 {
+		compatible = "motorola,ali-panel";
+		reg = <0>;
+
+		pinctrl-names = "default", "sleep";
+		pinctrl-0 = <&pmx_mdss_default>;
+		pinctrl-1 = <&pmx_mdss_sleep>;
+
+		reset-gpios = <&tlmm 61 GPIO_ACTIVE_LOW>;
+
+		port {
+			panel_in: endpoint {
+				remote-endpoint = <&dsi0_out>;
+			};
 		};
 	};
 };
@@ -237,6 +239,21 @@
 		function = "gpio";
 		drive-strength = <2>;
 		bias-pull-up;
+	};
+
+	pmx_mdss_default: pmx-mdss-default-pins {
+		pins = "gpio61";
+		function = "gpio";
+		drive-strength = <8>;
+		bias-disable;
+		output-high;
+	};
+
+	pmx_mdss_sleep: pmx-mdss-sleep-pins {
+		pins = "gpio61";
+		function = "gpio";
+		drive-strength = <2>;
+		bias-pull-down;
 	};
 };
 
