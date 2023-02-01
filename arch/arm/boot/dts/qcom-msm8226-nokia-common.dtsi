@@ -22,7 +22,7 @@
 	aliases {
 		mmc0 = &sdhc_1; /* eMMC */
 		mmc1 = &sdhc_2; /* microSD */
-		display0 = &framebuffer0;
+		//display0 = &framebuffer0;
 	};
 
 	chosen {
@@ -30,7 +30,7 @@
 		#size-cells = <1>;
 		ranges;
 
-		stdout-path = "display0";
+		//stdout-path = "display0";
 
 		framebuffer0: framebuffer@400000 {
 			compatible = "simple-framebuffer";

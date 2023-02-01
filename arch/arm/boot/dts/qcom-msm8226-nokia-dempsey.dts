@@ -10,8 +10,51 @@
 
 #include "qcom-msm8226-nokia-common.dtsi"
 
+/delete-node/ &framebuffer0;
+/delete-node/ &display_reserved;
+
 / {
 	model = "Microsoft Lumia 640";
 	compatible = "nokia,dempsey", "qcom,msm8226";
 	chassis-type = "handset";
+};
+
+&dsi0 {
+    status = "okay";
+
+    vdda-supply = <&pm8226_l15>;
+    vdd-supply = <&pm8226_l15>;
+    vddio-supply = <&pm8226_l6>;
+
+    panel@0 {
+        compatible = "nokia,tijuana";
+        reg = <0>;
+
+        power-supply = <&pm8226_l15>;
+
+        port {
+            panel_in: endpoint {
+                remote-endpoint = <&dsi0_out>;
+            };
+        };
+    };
+};
+
+&dsi0_out {
+    data-lanes = <0 1 2 3>;
+    remote-endpoint = <&panel_in>;
+};
+
+&dsi_phy0 {
+    status = "okay";
+    
+    vddio-supply = <&pm8226_l6>;
+};
+
+&mdp {
+    status = "okay";
+};
+
+&mdss {
+    status = "okay";
 };
